@@ -1,0 +1,32 @@
+system:
+  artifacts_storage_dir:""
+  artifacts_cache_dir:""
+  out_dir_base:""
+  out_result_dir:""
+  out_meta_result_dir:""
+  method:"metastore"
+  operator_type:"p2p"
+  device:"cuda"
+  precision_mode:""
+  float_precision:""
+  analyze_layer_type:
+    - "linear"
+    - "conv2d"
+  store_batch_size: 100
+  loader_max_batch_size: 100
+  gpu_memory_threshold: 0.05
+  random_seed: 1
+model:
+  checkpoint_path:""
+  optimizer:""
+  loss_func:""
+  lr: ""
+  momentum: ""
+  weight_decay: ""
+
+data:
+  data_name:""
+  data_dir:""
+  data_loader:""
+  trainer_path:""
+  batch_size:""
