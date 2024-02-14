@@ -1,7 +1,4 @@
-import timeit
-
-import torch
-from hooks import *
+from utils.hooks import *
 
 import warnings
 warnings.filterwarnings("ignore")

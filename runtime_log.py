@@ -12,4 +12,11 @@ class RuntimeLog:
     def save(self, log_base_dir):
         pass
 
+    def print(self):
+        print (self.preprocess_time)
+        print (self.io_time_per_layer)
+        print (self.cal_time_per_layer)
+        print (self.end2end_query_time)
+
+
 logger = RuntimeLog()

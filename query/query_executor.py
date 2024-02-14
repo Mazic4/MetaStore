@@ -1,8 +1,7 @@
 import os
 import timeit
 
-from ted_v3.artifacts_calculator.artifacts_collector import _get_data_artifacts
-from ted_v3.core_engine.meta_grad_calculator import _get_meta_gradients
+from core_engine.meta_grad_calculator import _get_meta_gradients
 
 import warnings
 warnings.filterwarnings("ignore")

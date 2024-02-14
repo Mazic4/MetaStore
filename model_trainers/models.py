@@ -10,7 +10,7 @@ from transformers import AdamW, AutoTokenizer, BertConfig, get_linear_schedule_w
 from transformers.modeling_outputs import  SequenceClassifierOutput
 from transformers import BertForSequenceClassification
 
-from ted_v2.utils.unwrap import *
+from utils.unwrap import *
 
 
 class Network(nn.Module):

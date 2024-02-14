@@ -114,12 +114,12 @@ def main():
     if opt.dataset == "cifar10":
         model = VGG16()
         model.load_state_dict(
-            torch.load('../ted/models/vgg16_models/cifar10_state_dict_finetune_{}.pth'.format(opt.analyzed_epoch)))
+            torch.load('./models/vgg16_models/cifar10_state_dict_finetune_{}.pth'.format(opt.analyzed_epoch)))
 
     elif opt.dataset == "AGNews":
         model = Customized_Bert_Model(num_classes=4).cuda()
         model.load_state_dict(
-            torch.load('/home/zhanghuayi01/TED/ted/models/bert_models/agnews_state_dict_finetune_{}_{}.pth'.
+            torch.load('./models/bert_models/agnews_state_dict_finetune_{}_{}.pth'.
                        format(opt.analyzed_epoch, opt.bert_hidden_size)), strict=False)
     else:
         raise NotImplementedError("not implemented dataset")

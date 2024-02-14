@@ -1,22 +1,12 @@
-import sys
 import random
 import argparse
-from tqdm import tqdm
-from collections import defaultdict
 import pickle
-import copy
-from tqdm import tqdm, trange
+from tqdm import tqdm
 
 import numpy as np
-import torch
-from torch import nn
-from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
-from torch.autograd import Variable
+from torch.utils.data import DataLoader
 
-from transformers import AdamW, AutoTokenizer, BertConfig, get_linear_schedule_with_warmup, AutoModel, BertModel
-from transformers import BertForSequenceClassification
-
-from ted_v3.utils.data_loader import get_dataset, get_dataset_text, get_dataset_features
+from utils.data_loader import get_dataset_text
 
 from utils import *
 from models import *

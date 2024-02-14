@@ -1,12 +1,10 @@
-import timeit
-
 from backpack import backpack, extend
 from backpack.extensions.firstorder.batch_grad import *
 
-from ted_v3.utils.hooks import save_forward_hooks, save_backward_hooks
-from ted_v3.utils.utils import *
+from utils.hooks import save_forward_hooks, save_backward_hooks
+from utils.utils import *
 
-from ted_v3.runtime_log import logger
+from runtime_log import logger
 
 def _register_hooks(analyzer):
 
@@ -22,7 +20,7 @@ def _register_hooks(analyzer):
 @timer(logger.preprocess_time)
 def _run_backward_batch(analyzer, data, label, **kwargs):
 
-    if analyzer.args.dataset in ["cifar10", "imagenet"]:
+    if analyzer.dataset_name in ["cifar10", "imagenet"]:
 
         model = extend(analyzer.model)
         loss_func = extend(analyzer.loss_func)
@@ -42,7 +40,7 @@ def _run_backward_batch(analyzer, data, label, **kwargs):
         with backpack(batch_grad):
             loss.backward()
 
-    elif analyzer.args.dataset == "AGNews":
+    elif analyzer.dataset_name == "AGNews":
 
         model = analyzer.model
         loss_func = analyzer.loss_func
@@ -57,7 +55,7 @@ def _run_backward_batch(analyzer, data, label, **kwargs):
         loss.backward()
 
     else:
-        raise ValueError("Unknown Dataset {}.".format(analyzer.args.dataset))
+        raise ValueError("Unknown Dataset {}.".format(analyzer.dataset_name))
 
     return True
 
@@ -72,12 +70,12 @@ def _collect_artifacts_naive(analyzer):
         if name not in analyzer.target_layers: continue
         if len(param.grad.shape) == 1: continue
 
-        if analyzer.args.dataset in ["cifar10", "imagenet"]:
+        if analyzer.dataset_name in ["cifar10", "imagenet"]:
             artifacts_holder[name] = param.grad_batch
-        elif analyzer.args.dataset == "AGNews":
+        elif analyzer.dataset_name == "AGNews":
             artifacts_holder[name] = param.grad
         else:
-            raise ValueError("Unknown Dataset {}.".format(analyzer.args.dataset))
+            raise ValueError("Unknown Dataset {}.".format(analyzer.dataset_name))
 
     return artifacts_holder
 

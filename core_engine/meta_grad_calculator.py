@@ -1,19 +1,14 @@
-import copy
-import timeit
-
 import torch.nn as nn
 
-from ted_v3.artifacts_calculator.artifacts_collector import _get_data_artifacts
-from ted_v3.artifacts_loader.artifacts_loader import load_data_artifacts
+from artifacts_loader.artifacts_loader import load_data_artifacts
 
-import ted_v3.core_engine.ted_layers as ted_layers
-import ted_v3.core_engine.half_layers as half_layers
-import ted_v3.core_engine.recon_layers as recon_layers
+import core_engine.ted_layers as ted_layers
+import core_engine.half_layers as half_layers
+import core_engine.recon_layers as recon_layers
 
-from ted_v3.utils.utils import *
-from ted_v3.utils.utils import _merge_holders
+from utils.utils import *
 
-from ted_v3.runtime_log import logger
+from runtime_log import logger
 
 
 import warnings
@@ -210,7 +205,7 @@ def _get_meta_gradients_curr_batch(analyzer, method, **kwargs):
 def _get_meta_gradients(analyzer, artifacts_list, method, **kwargs):
     # calcualte the meta-gradients based on the artifacts or ind gradinet
 
-    meta_gradients = torch.zeros(analyzer.args.num_samples).cuda()
+    meta_gradients = torch.zeros(analyzer.args["data"]["num_analyzed_samples"]).cuda()
 
     # find the unvisited_batches
     unvisited_batches = []

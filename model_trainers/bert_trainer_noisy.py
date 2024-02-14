@@ -16,7 +16,7 @@ from torch.autograd import Variable
 from transformers import AdamW, AutoTokenizer, BertConfig, get_linear_schedule_with_warmup, AutoModel, BertModel
 from transformers import BertForSequenceClassification
 
-from ted_v2.utils.data_loader import get_dataset, get_dataset_text, get_dataset_features, get_dataset_text_noisy
+from utils.data_loader import get_dataset, get_dataset_text, get_dataset_features, get_dataset_text_noisy
 
 from utils import *
 from models import *

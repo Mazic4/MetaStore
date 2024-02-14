@@ -1,32 +1,78 @@
 system:
-  artifacts_storage_dir:""
-  artifacts_cache_dir:""
-  out_dir_base:""
-  out_result_dir:""
-  out_meta_result_dir:""
-  method:"metastore"
-  operator_type:"p2p"
-  device:"cuda"
-  precision_mode:""
-  float_precision:""
-  analyze_layer_type:
+  out_dir_base: "."
+  out_result_dir: "/output/result"
+  out_meta_result_dir: "/output/meta/"
+  artifacts_store_base: "./artifacts/"
+  valid_methods:
+    - "naive"
+    - "ted"
+    - "half"
+    - "recon"
+  valid_layer_types:
     - "linear"
     - "conv2d"
-  store_batch_size: 100
-  loader_max_batch_size: 100
-  gpu_memory_threshold: 0.05
+  method: "ted"
+  operator_type: "p2p"
+  device: "cuda"
+  collect_artifacts: true
+  quant:
+    use_quant: false
+    quant_float_precision: "float32"
+  float_precision: "float32"
+  io:
+    max_store_batch_size: 100
+    loader_max_batch_size: 100
+    gpu_memory_threshold: 0.05
   random_seed: 1
-model:
-  checkpoint_path:""
-  optimizer:""
-  loss_func:""
-  lr: ""
-  momentum: ""
-  weight_decay: ""
-
+target_model:
+  VGG16:
+    model_name: "VGG16"
+    target_epoch: 2
+    trainer_path_path: "/model_trainers/vgg16_trainer.py"
+    checkpoint_path: "/models/vgg16_models/cifar10_state_dict_finetune_{}.pth"
+    optimizer: "sgd"
+    loss_func: "cross_entropy"
+    lr: 0.1
+    momentum: 0.9
+    weight_decay: 5e-4
+    target_layers:
+      - "net_conv1"
+      - "net_conv7"
+      - "net_conv13"
+      - "net_l1"
+  Bert:
+    model_name: "Bert"
+    target_epoch: 2
+    trainer_file_path: "/model_trainers/bert_trainer.py"
+    checkpoint_path: "/models/bert_models/agnews_state_dict_finetune_{}_{}.pth"
+    optimizer: "sgd"
+    loss_func: "cross_entropy"
+    lr: 0.1
+    momentum: 0.9
+    weight_decay: 5e-4
+    target_layers:
+      - "net_bert_encoder_layer_11_attention_self_query"
+      - "net_bert_encoder_layer_11_attention_self_key"
+      - "net_bert_encoder_layer_11_attention_self_value"
+      - "net_bert_encoder_layer_6_attention_self_query"
+      - "net_bert_encoder_layer_6_attention_self_key"
+      - "net_bert_encoder_layer_6_attention_self_value"
+      - "net_bert_encoder_layer_1_attention_self_query"
+      - "net_bert_encoder_layer_1_attention_self_key"
+      - "net_bert_encoder_layer_1_attention_self_value"
 data:
-  data_name:""
-  data_dir:""
-  data_loader:""
-  trainer_path:""
-  batch_size:""
+  cifar10:
+    data_name: "cifar10"
+    data_dir: "/data/cifar10/"
+    data_loader: "custom"
+    num_analyzed_samples: 200
+    batch_size: 100
+  AGNews:
+    data_name: "AGNews"
+    train_file: "./data/AGNews/train_data.json"
+    dev_file: "./data/AGNews/dev_data.json"
+    test_file: "./data/AGNews/test_data.json"
+    unlabeled_file: "./data/AGNews/unlabeled_data.json"
+    data_loader: "custom"
+    num_analyzed_samples: 200
+    batch_size: 100

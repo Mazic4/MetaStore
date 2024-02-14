@@ -25,7 +25,7 @@ from backpack.extensions import BatchGrad, BatchL2Grad
 from backpack.extensions.firstorder.batch_grad import *
 
 from models import Network, VGG16, ResNet50, Identity
-from ted_v2.utils.data_loader import *
+from utils.data_loader import *
 from tqdm import tqdm
 
 import warnings

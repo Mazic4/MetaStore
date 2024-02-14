@@ -15,14 +15,46 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 class Analyzer():
     def __init__(self, args)->None:
+
         self.args = args
 
+        #check method
         self.valid_methods = ["naive", "ted", "half", "recon"]
-
         if self.args.method not in self.valid_methods:
-            raise ValueError("Method {} is not found.".format(self.args.method))
-
+            raise NotImplementedError("Method {} is not found.".format(self.args.method))
         print ("Method is ", self.args.method)
+
+        #check layer type
+        self.valid_layers = [nn.Linear, nn.Conv2d]
+
+        if self.args.dataset == "AGNews":
+            if self.args.experiment_type in ["model", "batch"]:
+                self.target_layers = ['net_bert_encoder_layer_11_attention_self_query',
+                                      'net_bert_encoder_layer_11_attention_self_key',
+                                      'net_bert_encoder_layer_11_attention_self_value',
+                                      'net_bert_encoder_layer_6_attention_self_query',
+                                      'net_bert_encoder_layer_6_attention_self_key',
+                                      'net_bert_encoder_layer_6_attention_self_value',
+                                      'net_bert_encoder_layer_1_attention_self_query',
+                                      'net_bert_encoder_layer_1_attention_self_key',
+                                      'net_bert_encoder_layer_1_attention_self_value'
+                                      ]
+            else:
+                self.target_layers = ['net_bert_encoder_layer_11_attention_self_query',
+                                      'net_bert_encoder_layer_11_attention_self_key',
+                                      'net_bert_encoder_layer_11_attention_self_value']
+
+        elif self.args.dataset == "cifar10":
+            if self.args.experiment_type in ["model", "batch"]:
+                self.target_layers = ["net_conv1", "net_conv7", "net_conv13", "net_l1"]
+            else:
+                self.target_layers = ["net_conv_append_layer", "net_linear_append_layer"]
+
+        elif self.args.dataset == "imagenet":
+            if self.args.experiment_type in ["model", "batch"]:
+                self.target_layers = ["net_l1", "net_model_base_layer4_2_conv2"]
+            else:
+                self.target_layers = ["net_linear_append_layer"]
 
         self.artifacts_log_path = "./artifacts/{}_artifacts_layer".format(self.args.dataset)
         os.makedirs(self.artifacts_log_path, exist_ok=True)
@@ -74,38 +106,6 @@ class Analyzer():
 
         self.visited_checkpoints_naive = set([])
         self.visited_checkpoints_ted = set([])
-
-        self.valid_layers = [nn.Linear, nn.Conv2d]
-
-        if self.args.dataset == "AGNews":
-            if self.args.experiment_type in ["model", "batch"]:
-                self.target_layers = ['net_bert_encoder_layer_11_attention_self_query',
-                                      'net_bert_encoder_layer_11_attention_self_key',
-                                      'net_bert_encoder_layer_11_attention_self_value',
-                                      'net_bert_encoder_layer_6_attention_self_query',
-                                      'net_bert_encoder_layer_6_attention_self_key',
-                                      'net_bert_encoder_layer_6_attention_self_value',
-                                      'net_bert_encoder_layer_1_attention_self_query',
-                                      'net_bert_encoder_layer_1_attention_self_key',
-                                      'net_bert_encoder_layer_1_attention_self_value'
-                                      ]
-            else:
-                self.target_layers = ['net_bert_encoder_layer_11_attention_self_query',
-                                      'net_bert_encoder_layer_11_attention_self_key',
-                                      'net_bert_encoder_layer_11_attention_self_value']
-
-        elif self.args.dataset == "cifar10":
-            if self.args.experiment_type in ["model", "batch"]:
-                self.target_layers = ["net_conv1", "net_conv7", "net_conv13", "net_l1"]
-            else:
-                self.target_layers = ["net_conv_append_layer", "net_linear_append_layer"]
-
-        elif self.args.dataset == "imagenet":
-            if self.args.experiment_type in ["model", "batch"]:
-                self.target_layers = ["net_l1", "net_model_base_layer4_2_conv2"]
-            else:
-                self.target_layers = ["net_linear_append_layer"]
-
 
         print ("Target layers include:", self.target_layers)
 
