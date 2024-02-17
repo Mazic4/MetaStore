@@ -100,7 +100,7 @@ def _get_data_artifacts_naive(analyzer, data, label):
     try:
          _run_backward_batch(analyzer, data, label, log_name="backward")
     except Exception as e:
-        print(e)
+        raise ValueError(e)
 
     artifacts_holder = _collect_artifacts_naive(analyzer)
 

@@ -130,3 +130,35 @@ def get_dataloader_agnews(args, mode, indices):
     dataset = process_dataset(args, mode, tokenizer, indices)
     data_loader = DataLoader(dataset, batch_size=args["batch_size"], shuffle=False)
     return data_loader, dataset
+
+
+def get_dataloader_imagenet(args, mode, indices):
+
+    data_dir = args["data_dir"]
+
+    if mode == "train":
+        transform = transforms.Compose([
+            transforms.Resize(64),  # Takes images smaller than 64 and enlarges them
+            transforms.RandomCrop(64, padding=4, padding_mode='edge'),  # Take 64x64 crops from 72x72 padded images
+            transforms.RandomHorizontalFlip(),  # 50% of time flip image along y-axis
+            transforms.ToTensor(),
+        ])
+
+        dataset = Custom_Dataset(
+            torchvision.datasets.ImageFolder(root=os.path.join(data_dir, 'train'), transform=transform),
+            index=indices)
+        loader = torch.utils.data.DataLoader(dataset, batch_size=args["batch_size"], shuffle=True, num_workers=2)
+
+    elif mode == "test":
+        transform = transforms.Compose([
+            transforms.ToTensor(),
+        ])
+        dataset = Custom_Dataset(
+            torchvision.datasets.ImageFolder(root=os.path.join(data_dir, 'val'), transform=transform),
+            index=indices)
+        loader = torch.utils.data.DataLoader(dataset, batch_size=args["batch_size"], shuffle=False, num_workers=2)
+    else:
+        raise NotImplementedError
+
+
+    return loader, dataset

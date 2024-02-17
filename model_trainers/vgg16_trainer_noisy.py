@@ -1,27 +1,11 @@
-import os
-import sys
 import argparse
 import random
 
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-# import seaborn as sns
-# %matplotlib inline
-
-import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
 from torch.autograd import Variable
 
-import torchvision
-
-from backpack import backpack, extend
-from backpack.extensions import BatchGrad, BatchL2Grad
-from backpack.extensions.firstorder.batch_grad import *
-
-from models import Network, VGG16
+from models import VGG16
 from utils.data_loader import *
 from tqdm import tqdm
 
@@ -34,7 +18,7 @@ class Trainer():
         self.args = args
 
         self.build_model()
-        self.get_data()
+        self.get_data(noisy_data_limit=args.noisy_data_limit)
 
     def build_model(self):
 
@@ -45,10 +29,10 @@ class Trainer():
         ), lr=self.args.lr, momentum=self.args.momentum)
         self.loss_func = nn.CrossEntropyLoss()
 
-    def get_data(self, dataset="cifar10"):
+    def get_data(self, dataset="cifar10", noisy_data_limit = 5000):
 
-        target_classes = [0, 1]
-        noisy_class = [(2, 0)]
+        target_classes = [1,2,3,4,5,6,7,8,9]
+        noisy_class = [(0, 1)]
 
         if dataset == "cifar10":
             self.transform = torchvision.transforms.Compose([
@@ -66,34 +50,41 @@ class Trainer():
             ])
 
             #create noisy labels
-            _labels = []
-            org_dataset = torchvision.datasets.CIFAR10('data', transform=self.transform, train=True, download=True)
-            for i in range(len(org_dataset)):
-                org_label = org_dataset[i][1]
-                _labels.append(org_label)
+            train_labels, test_labels = [], []
+            train_data_indices, test_data_indices = [], []
+            noisy_data_counter = 0
+            org_train_dataset = torchvision.datasets.CIFAR10('data', transform=self.transform, train=True, download=True)
+            for i in range(len(org_train_dataset)):
+                org_label = org_train_dataset[i][1]
+                if org_label in target_classes:
+                    train_labels.append(org_label)
+                    train_data_indices.append(i)
+                elif org_label == noisy_class[0][0]:
+                    if noisy_data_counter < noisy_data_limit:
+                        train_labels.append(noisy_class[0][1])
+                        noisy_data_counter += 1
+                    else:
+                        train_labels.append(org_label)
+                    train_data_indices.append(i)
 
-            # idx = np.arange(len(org_dataset))
-            # np.random.shuffle(idx)
-            # noisy_idx = idx[:int(len(idx) * 0.01)]
-            # for i in noisy_idx:
-            #     org_label = labels[i]
-            #     noisy_label = np.random.randint(low=0, high=10)
-            #     while noisy_label == org_label:
-            #         noisy_label = np.random.randint(low=0, high=10)
-            #     labels[i] = noisy_label
 
-            # labels = np.array(labels)
-            labels = np.load("../model_trainers/models/vgg16_models/cifar_noisy_labels_0.01.npy")
-            for i in range(len(labels)):
-                if (labels[i] != _labels[i]):
-                    print (labels[i], _labels[i])
-            # with open('./models/vgg16_models/cifar_noisy_labels_0.05.npy', 'wb') as f:
-                # np.save(f, labels)
+            org_test_dataset = torchvision.datasets.CIFAR10('data', transform=self.transform, train=False, download=True)
+            for i in range(len(org_test_dataset)):
+                org_label = org_test_dataset[i][1]
+                test_labels.append(org_label)
+                test_data_indices.append(i)
+
+            train_labels = np.array(train_labels)
+            test_labels = np.array(test_labels)
+
+            with open('./models/vgg16_models/cifar_noisy_labels_{}_v2.npy'.format(self.args.noisy_data_limit), 'wb') as f:
+                np.save(f, train_labels)
 
             # self.train_dataset = datasets.MNIST('data', transform= self.transform, train=True, download=True)
-            self.train_dataset = Customized_Dataset_noisy(org_dataset, labels)
-            self.test_dataset = Customized_Dataset(
-                torchvision.datasets.CIFAR10('data', transform=self.transform_test, train=False, download=True))
+            self.train_dataset = Customized_Dataset_noisy(org_train_dataset, train_labels, index=train_data_indices)
+            self.test_dataset = Customized_Dataset_noisy(org_test_dataset, test_labels, index=test_data_indices)
+            # self.test_dataset = Customized_Dataset(
+            #     torchvision.datasets.CIFAR10('data', transform=self.transform_test, train=False, download=True))
 
             self.train_loader = torch.utils.data.DataLoader(self.train_dataset,
                                                             batch_size=self.args.batch_size, shuffle=True)
@@ -171,7 +162,7 @@ class Trainer():
                 e, train_loss, test_loss, test_acc))
 
             torch.save(self.model.module.state_dict(),
-                       './models/vgg16_models/cifar10_state_dict_noisy_0.01_{}.pth'.format(e))
+                       './models/vgg16_models/cifar10_state_dict_noisy_v2_{}_{}.pth'.format(self.args.noisy_data_limit, e))
 
 
 if __name__ == "__main__":
@@ -192,6 +183,8 @@ if __name__ == "__main__":
                         help="number of cpu threads to use during batch generation")
     parser.add_argument("--hidden_size", type=int, default=512,
                         help="number of output features in fcn for cifar")
+    parser.add_argument("--noisy_data_limit", type=int, default=5000,
+                        help="noisy_data_limit")
 
     opt = parser.parse_args()
 
@@ -205,5 +198,7 @@ if __name__ == "__main__":
     torch.backends.cudnn.deterministic = True
     print("Set seed :", seed)
 
-    trainer = Trainer(opt)
-    trainer.main()
+    for noisy_data_limit in [1000, 2000, 3000, 4000]:
+        opt.noisy_data_limit = noisy_data_limit
+        trainer = Trainer(opt)
+        trainer.main()

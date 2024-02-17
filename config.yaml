@@ -60,6 +60,19 @@ target_model:
 #      - "net_bert_encoder_layer_1_attention_self_query"
 #      - "net_bert_encoder_layer_1_attention_self_key"
 #      - "net_bert_encoder_layer_1_attention_self_value"
+  ResNet50:
+    model_name: "ResNet50"
+    target_epoch: 2
+    trainer_path_path: "/model_trainers/resnet50_trainers.py"
+    checkpoint_path: "/models/resnet50_models/imagenet_state_dict_finetune_{}.pth"
+    optimizer: "sgd"
+    loss_func: "cross_entropy"
+    lr: 0.1
+    momentum: 0.9
+    weight_decay: 5e-4
+    target_layers:
+      - "net_l1"
+      - "net_model_base_layer4_2_conv2"
 data:
   cifar10:
     data_name: "cifar10"
@@ -76,3 +89,9 @@ data:
     data_loader: "custom"
     num_analyzed_samples: 200
     batch_size: 100
+  imagenet:
+    data_name: "imagenet"
+    data_dir: "./data/imagenet64"
+    data_loader: "custom"
+    num_analyzed_samples: 200
+    batch_size: 5

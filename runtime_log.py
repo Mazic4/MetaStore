@@ -19,7 +19,6 @@ class RuntimeLog:
         today_date = datetime.now().date()
         method = config["system"]["method"]
         os.makedirs(_log_base_dir, exist_ok=True)
-        # index = len(os.listdir(_log_base_dir))
 
         log_base_dir_suffix = "{}/{}_{}_{}_{}".format(str(today_date),
                                                       config["system"]["method"],
@@ -27,7 +26,7 @@ class RuntimeLog:
                                                       config["data"]["num_analyzed_samples"],
                                                       config["system"]["num_query"])
         log_base_dir = os.path.join(_log_base_dir,log_base_dir_suffix)
-        os.makedirs(log_base_dir)
+        os.makedirs(log_base_dir, exist_ok=True)
 
         file_name = os.path.join(log_base_dir, "config.yaml")
         print (file_name)

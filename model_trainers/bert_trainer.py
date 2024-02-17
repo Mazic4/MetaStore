@@ -8,7 +8,6 @@ from torch.utils.data import DataLoader
 
 from utils.data_loader import get_dataset_text
 
-from utils import *
 from models import *
 
 import matplotlib.pyplot as plt

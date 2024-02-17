@@ -128,6 +128,9 @@ class Analyzer:
         elif data_args["data_name"] == "AGNews":
             self.train_loader, self.train_dataset = dataloader.get_dataloader_agnews(data_args, mode='train',
                                                                                     indices=train_indices)
+        elif data_args["data_name"] == "imagenet":
+            self.train_loader, self.train_dataset = dataloader.get_dataloader_imagenet(data_args, mode='train',
+                                                                                    indices=train_indices)
         else:
             raise NotImplementedError
 
@@ -149,6 +152,11 @@ class Analyzer:
                 torch.load('./models/bert_models/agnews_state_dict_finetune_{}_{}.pth'.
                            format(model_args["target_epoch"], 768)), strict=False)
             #todo: clean the model path
+        elif model_args["model_name"] == "ResNet50":
+            self.model = ResNet50()
+            self.model.load_state_dict(
+                torch.load('./models/resnet50_models/imagenet_state_dict_finetune_{}.pth'.format(
+                    model_args["target_epoch"])))
         else:
             raise NotImplementedError
 
