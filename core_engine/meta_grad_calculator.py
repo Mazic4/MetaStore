@@ -213,8 +213,6 @@ def _get_meta_gradients(analyzer, artifacts_list, method, **kwargs):
         if i not in analyzer.cached_batches:
             unvisited_batches.append(i)
 
-    #todo: remove this
-    visited_cnt = 0
     # iterat through unvisited batches until all batches are visited
     while True:
         if len(analyzer.cached_batches) == 0 and method in ["ted", "naive", "recon", "half"]:
@@ -225,15 +223,11 @@ def _get_meta_gradients(analyzer, artifacts_list, method, **kwargs):
         _meta_gradients = _get_meta_gradients_curr_batch(analyzer=analyzer,method=method,**artifacts_dict)
         meta_gradients[analyzer.cached_train_samples_idx] = _meta_gradients
 
-        visited_cnt += len(analyzer.cached_train_samples_idx)
         #release the cached batches
         analyzer.cached_batches = []
         torch.cuda.empty_cache()
 
-        print (visited_cnt)
-
         if len(unvisited_batches) == 0:
-            print ("Not unvisited batches left.")
             break
 
     return meta_gradients

@@ -176,7 +176,7 @@ def timer(runtime_var: Dict[str, float]):
             end_time = timeit.default_timer()
             key_name = kwargs.get("log_name", None)
             if key_name: runtime_var[key_name] = runtime_var.get(key_name, 0) + end_time - start_time
-            print(f'Function {func.__name__} Took {end_time - start_time:.4f} seconds')
+            # print(f'Function {func.__name__} Took {end_time - start_time:.4f} seconds')
             return result
         return timeit_wrapper
     return _timer

@@ -50,8 +50,6 @@ def store_traindata_artifacts_naive(analyzer):
 
             artifacts_cache_loader = _merge_holders(artifacts_holder, artifacts_cache_loader)
             artifacts_index_loader += idx.tolist()
-            print (batch_idx, artifacts_index_loader)
-            print (len(analyzer.train_loader))
 
             if len(artifacts_index_loader) >= analyzer.max_store_batch_size or \
                     batch_idx == len(analyzer.train_loader)-1:
@@ -136,7 +134,6 @@ def store_traindata_artifacts_metastore(analyzer):
         artifacts_cache_loader_dl_dy = _merge_holders(artifacts_holder_dl_dy, artifacts_cache_loader_dl_dy)
         artifacts_index_loader += idx.tolist()
 
-        # print (timeit.default_timer()-start_time)
         if len(artifacts_index_loader) >= analyzer.max_store_batch_size or \
                 batch_idx == len(analyzer.train_loader)-1:
 

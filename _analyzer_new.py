@@ -32,6 +32,7 @@ class Analyzer:
         self.artifacts_size_known=self.get_artifacts_size()
         if not self.artifacts_size_known:
             store_traindata_artifacts(self, method=self.args["system"]["method"])
+        self.artifacts_size_known = self.get_artifacts_size()
 
     def set_variable(self):
 
