@@ -1,7 +1,7 @@
 # MetaStore: Analyzing Deep Learning Meta-Data at Scale
 
 ## 🔔 News
-- **[02/09/2024]** Our code is open-sourced! The code repo is still under construction, Please contact zhanghuayi01@gmail.com if you have any questions.
+- **[02/09/2024]** We released the code of MetaStore! The code repo is still under construction, Please contact zhanghuayi01@gmail.com if you have any questions.
 
 We support the following methods: 
 * naive: The naive method that store and compute on full gradient
