@@ -5,7 +5,7 @@ import sys
 sys.path.append('../')
 print(sys.path)
 
-from utils.data_loader_new import *
+from utils.data_loader_v2 import *
 from utils.grad_to_feats import *
 from analyzer import Analyzer
 from artifacts_calculator.artifacts_collector import _get_data_artifacts

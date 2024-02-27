@@ -22,7 +22,7 @@ system:
   io:
     max_store_batch_size: 100
     loader_max_batch_size: 100
-    gpu_memory_threshold: 0.025
+    gpu_memory_threshold: 0.02
   random_seed: 1
 target_model:
   VGG16:

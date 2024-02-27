@@ -6,7 +6,7 @@ from model_trainers.models import *
 from artifacts_storage.artifacts_store import store_traindata_artifacts
 
 from utils import *
-from utils import data_loader_new as dataloader
+from utils import data_loader_v2 as dataloader
 from utils.utils import *
 from utils.unwrap import  unwrap
 from utils.grad_to_feats import *
