@@ -29,7 +29,7 @@ class Trainer():
         ), lr=self.args.lr, momentum=self.args.momentum)
         self.loss_func = nn.CrossEntropyLoss()
 
-    def get_data(self, dataset="cifar10", noisy_data_limit = 5000):
+    def get_data(self, dataset="cifar10", noisy_data_limit = 1000):
 
         target_classes = [1,2,3,4,5,6,7,8,9]
         noisy_class = [(0, 1)]

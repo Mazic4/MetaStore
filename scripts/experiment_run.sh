@@ -1,5 +1,10 @@
 #bin/bash!
 
+# Get the current working directory
+current_path=$(pwd)
+cd $current_path
+echo $current_path
+
 device_number=0
 analyze_file_path="./main.py"
 config_path="./config.yaml"
@@ -10,9 +15,9 @@ for method in "ted" "half" "recon" "naive"
 do
 for dataset in "cifar10" "AGNews" "imagenet"
 do
-for num_samples in 500 1000 2000
+for num_samples in 5000
 do
-for num_query in 20
+for num_query in 50
 do
   echo $method
   echo $dataset

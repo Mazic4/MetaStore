@@ -1,9 +1,13 @@
 # MetaStore: Analyzing Deep Learning Meta-Data at Scale
 
+## 🔔 News
+- **[02/09/2024]** Our code is open-sourced! The code repo is still under construction, Please contact zhanghuayi01@gmail.com if you have any questions.
+
 We support the following methods: 
-* Naive: directly compute, store, load and compute on gradients.
-* p2p: P2P operator of MetaStore
-* p2b: P2B operator of MetaStore
+* naive: The naive method that store and compute on full gradient
+* recon: A p2b method that use \<prefix, suffix\> pairs to store/load gradients, but reconstruct gradients in GPU.
+* ted: the method that run with p2p operators in MetaStore 
+* half: the method that run with p2b operators in MetaStore
 
 ## Setup
 The following steps provide the necessary setup to run our codes.
@@ -22,10 +26,6 @@ pip install -r requirements.txt
 ```
 ## Usage Example
 Using the CIFAR10/AGNews/Imagenet dataset as example, you can test MetaStore with the following methods:
-* naive: The naive method that store and compute on full gradient
-* recon: A p2b method that use \<prefix, suffix\> pairs to store/load gradients, but reconstruct gradients in GPU.
-* ted: the method that run with p2p operators in MetaStore 
-* half: the method that run with p2b operators in MetaStore
 
 You can run the scripts to test MetaStore:
 ```
